@@ -54,24 +54,18 @@
             <ul>
                 <li class="item-content ">
                     <p ng-class="{ active: isSet(1) }">
-                        <a  ng-click = "setTab(1)" href>Station</a>
+                        <a  class="close-panel" ng-click = "setTab(1)" href>Station</a>
                     </p>
                  </li>
                 <li class="item-content ">
                     <p ng-class="{ active: isSet(2) }">
-                        <a  class= "theme-black" ng-click = "setTab(2)" href>Trips</a>
+                        <a  class= "close-panel" ng-click = "setTab(2)" href>Trips</a>
                     </p>
                 </li>
 
                 <li class="item-content ">
                     <p ng-class="{ active: isSet(3) }">
-                        <a  ng-click = "setTab(3)" href>About Me</a>
-                    </p>
-                </li>
-
-                <li class="item-content ">
-                    <p>
-                        <a  href = ""  class="close-panel">Close Panel</a>
+                        <a  class= "close-panel" ng-click = "setTab(3)" href>About App</a>
                     </p>
                 </li>
              </ul>
@@ -154,13 +148,24 @@
                                                     <div class="item-after">{{resultS.stations.station.cross_street}}</div>
                                                 </div>
                                             </li>
+
+                                            <li class="item-content">
+                                                <div class="item-inner">
+                                                    <div class="item-title"><b>Latitude</b></div>
+                                                    <div class="item-after">{{resultS.stations.station.gtfs_latitude}}</div>
+                                                </div>
+                                            </li>
+
+                                            <li class="item-content">
+                                                <div class="item-inner">
+                                                    <div class="item-title"><b>Longitude</b></div>
+                                                    <div class="item-after">{{resultS.stations.station.gtfs_longitude}}</div>
+                                                </div>
+                                            </li>
+
                                         </ul>
                                     </div>
-                                    <div class="page-content">
-                                        <div class="content-block">
-                                            <p><a href="#" data-popup=".popup-about" class="open-popup">Open About Popup </a></p>
-                                        </div>
-                                    </div>
+
 
                                 </div>
 
@@ -205,8 +210,13 @@
                                 </div>
 
                             </div>
+                            <div>
+                                <div ng-show ="isSet(3)" >
+                                    <p>This application provides the schedule of BART and the information of each station like its address, pin, street where it is located etc </p>
+                                </div>
+                            </div>
 
-                            <div class="popup popup-about">
+                                <div class="popup popup-about">
                                 <div class="content-block">
                                     <div id="mapElement"> </div>
                                     <p><a href="#" class="close-popup">Close popup</a></p>
@@ -214,11 +224,6 @@
                                 </div>
                             </div>
 
-                           <div>
-                                <div ng-show ="isSet(3)" ng-controller = "detailsCtrl">
-                                    
-                                </div>
-                            </div>
 
 
 
@@ -227,11 +232,7 @@
             </div>
             <!-- Bottom Toolbar-->
             <div class="toolbar">
-                <div class="toolbar-inner">
-                    <!-- Toolbar links -->
-                    <a href="#" class="link">Link 1</a>
-                    <a href="#" class="link">Link 2</a>
-                </div>
+                   <div style ="text-align:center;margin-top: 8px"> &copy; Mahendra Mhatre </div>
             </div>
 
 
