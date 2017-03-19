@@ -99,6 +99,108 @@ var app = angular.module('BartModule', []);
 
  });
 
+app.controller('detailsCtrl', function($scope, $http, $interval, $timeout) {
+
+    this.isTrue = function() {
+        return false;
+    };
+
+
+    $scope.timeFound = false;
+    $scope.noTrainFound = false;
+    $scope.countTime = 0;
+    var mytimeout;
+    $scope.getTimer = function (ans) {
+        var currentTime = new Date().getTime();
+        var loopRun = true;
+        var realDate = currentTime;
+        angular.forEach(ans.schedule.request.trip, function (trip) {
+            if(loopRun){
+                var dateString = trip["@attributes"].origTimeDate + trip["@attributes"].origTimeMin;
+                realDate = new Date(dateString);
+                realDate = realDate.getTime();
+                if(realDate > currentTime) {
+                    loopRun = false;
+                }
+            }
+
+        });
+
+        var tempCounter = 60 + Math.floor((realDate - currentTime) / 1000);
+        if( tempCounter < 0) {
+            $scope.countTime = 0;
+            $scope.noTrainFound = true;
+            $scope.timeFound = false;
+        } else {
+            $scope.noTrainFound = false;
+            $scope.countTime = tempCounter;
+            $scope.timeFound = true;
+
+        }
+        if (!(mytimeout === undefined)) {
+            $timeout.cancel(mytimeout);
+
+        }
+        $scope.onTimeout = function () {
+            if($scope.countTime <= 0) {
+                $scope.countTime = 0;
+                $scope.noTrainFound = true;
+                $scope.timeFound = false;
+
+            }
+            else {
+                $scope.countTime--;
+                $scope.noTrainFound = false;
+                $scope.timeFound = true;
+
+            }
+            mytimeout = $timeout($scope.onTimeout, 1000);
+        };
+        mytimeout = $timeout($scope.onTimeout, 1000);
+    };
+
+    $scope.getDetails = function(org , dest) {
+
+        if(!(org === undefined) && !(dest === undefined)) {
+
+            $http.get("http://bart.mahendramhatre.com/trains?source=" + org.abbr + "&dest=" + dest.abbr).success(function (result) {
+                console.log("Success", result);
+                $scope.resultTrip = result;
+
+                if(!($scope.resultTrip.schedule === undefined) ){
+                    $scope.getTimer($scope.resultTrip);
+                }
+                else {
+                    $scope.countTime= 0;
+                    $timeout.cancel(mytimeout);
+                }
+
+            }).error(function () {
+                console.log("error");
+            });
+
+
+        };
+
+    };
+
+
+
+});
+
+app.filter('formatTimer', function () {
+    return function (input) {
+        function z(n) {
+            return (n < 10 ? '0' : '') + n;
+        }
+
+        var seconds = input % 60;
+        var minutes = Math.floor(input / 60);
+        var hours = Math.floor(minutes / 60);
+        return (z(hours) + ':' + z(minutes) + ':' + z(seconds));
+    };
+});
+
 
 
 

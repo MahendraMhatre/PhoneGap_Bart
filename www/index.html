@@ -12,7 +12,7 @@
     <meta name="msapplication-tap-highlight" content="no">
 
     <!-- Your app title -->
-    <title>My App</title>
+    <title>Bart Application</title>
 
     <!-- This template defaults to the iOS CSS theme. To support both iOS and material design themes, see the Framework7 Tutorial at the link below:
         http://www.idangero.us/framework7/tutorials/maintain-both-ios-and-material-themes-in-single-app.html
@@ -89,7 +89,7 @@
             <div class="navbar">
                 <div class="navbar-inner">
                     <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
-                    <div class="center sliding">Awesome App</div>
+                    <div class="center sliding">Bart App</div>
                     <div class="right">
                         <!--
                           Right link contains only icon - additional "icon-only" class
@@ -109,7 +109,7 @@
                             <!-- Link to another page -->
                             <div>
                                 <div ng-show ="isSet(1)" >
-                                    <select ng-model="selected" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected=''" ng-change="getStation(selected.abbr);change(selected.gtfs_latitude,selected.gtfs_longitude);createMarker()">
+                                   Select Station: <select ng-model="selected" class="button  color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected=''" ng-change="getStation(selected.abbr);change(selected.gtfs_latitude,selected.gtfs_longitude);createMarker()">
 
                                     </select>
 
@@ -169,11 +169,37 @@
                             <!--Trips  page visibility-->
 
                             <div>
-                                <div ng-show ="isSet(2)" >
+                                <div ng-show ="isSet(2)" ng-controller = "detailsCtrl">
                                     <div>
-                                        Trips
+                                        <div class="list-block">
+                                            <ul>
+                                                <li class="item-content">
+                                                    <div class="item-inner">
+                                                        <div class="item-title">Time for next train </div>
+                                                        <div class="item-after"><span class="badge">{{countTime | formatTimer}}</span></div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        Select Source: <select ng-model="selected1" class="button color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected1=''" ng-change="getDetails(selected1, selected2)"></select> <br/>
+                                        Select Destination: <select ng-model="selected2" class="button  color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected2=''" ng-change="getDetails(selected1, selected2) " ></select>
+                                        <div ng-if="resultTrip.schedule.request.trip">
+                                            <!--card view-->
+                                            <div ng-repeat="st in resultTrip.schedule.request.trip">
+                                                <div class="card">
+                                                    <div class="card-header"> Date: {{resultTrip.schedule.date | date: "fullDate"}}</div>
+                                                        <div class="card-content">
+                                                            <div class="card-content-inner">
+                                                                {{st["@attributes"].origin}} <br/> Departure Time :: {{st["@attributes"].origTimeMin}} <br/> <br/>
+                                                                {{st["@attributes"].destination}} <br/> Arrival Time ::{{st["@attributes"].destTimeMin}}
 
+                                                            </div>
+                                                        </div>
+                                                    <div class="card-footer">Fare: {{st.fares.fare[0]["@attributes"].amount}}</div>
+                                                </div>
+                                            </div>
 
+                                        </div>
                                     </div>
 
                                 </div>
@@ -182,16 +208,17 @@
 
                             <div class="popup popup-about">
                                 <div class="content-block">
-                                    {{createMarker()}}
                                     <div id="mapElement"> </div>
                                     <p><a href="#" class="close-popup">Close popup</a></p>
 
                                 </div>
                             </div>
 
-
-
-
+                           <div>
+                                <div ng-show ="isSet(3)" ng-controller = "detailsCtrl">
+                                    
+                                </div>
+                            </div>
 
 
 
@@ -206,8 +233,11 @@
                     <a href="#" class="link">Link 2</a>
                 </div>
             </div>
+
+
         </div>
     </div>
+
 
 
 </body>
