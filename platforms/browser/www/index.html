@@ -2,10 +2,12 @@
 <html>
 <head>
 
-    <meta http-equiv="Content-Security-Policy" content="font-src * data:;default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; img-src * data: 'unsafe-inline'">
+    <meta http-equiv="Content-Security-Policy"
+          content="font-src * data:;default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src 'self' 'unsafe-inline' *; img-src * data: 'unsafe-inline'">
     <!-- Required meta tags-->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="format-detection" content="telephone=no">
@@ -27,12 +29,14 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCYvVsJNzHxoApX6dy8BxmKimobNGUjtA"></script>
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
+    <script src="https://rawgithub.com/gsklee/ngStorage/master/ngStorage.js"></script>
+    <script src="../node_modules/ngstorage/ngStorage.js"></script>
     <script type="text/javascript" src="js/my-app.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <style type="text/css">
 
         #mapElement {
-            height:420px;
+            height: 420px;
         }
 
     </style>
@@ -40,205 +44,235 @@
 
 </head>
 
-<body ng-app = "BartModule" ng-controller = "MainCtrl">
-    <!-- Status bar overlay for full screen mode (PhoneGap) -->
-    <div class="statusbar-overlay"></div>
+<body ng-app="BartModule" ng-controller="MainCtrl">
+<!-- Status bar overlay for full screen mode (PhoneGap) -->
+<div class="statusbar-overlay"></div>
 
-    <!-- Panels overlay-->
-    <div class="panel-overlay"></div>
-    <!-- Left panel with reveal effect-->
-    <div class="panel panel-left panel-reveal">
-
-
-        <div class="list-block layout-dark">
-            <ul>
-                <li class="item-content ">
-                    <p ng-class="{ active: isSet(1) }">
-                        <a  class="close-panel" ng-click = "setTab(1)" href>Station</a>
-                    </p>
-                 </li>
-                <li class="item-content ">
-                    <p ng-class="{ active: isSet(2) }">
-                        <a  class= "close-panel" ng-click = "setTab(2)" href>Trips</a>
-                    </p>
-                </li>
-
-                <li class="item-content ">
-                    <p ng-class="{ active: isSet(3) }">
-                        <a  class= "close-panel" ng-click = "setTab(3)" href>About App</a>
-                    </p>
-                </li>
-             </ul>
+<!-- Panels overlay-->
+<div class="panel-overlay"></div>
+<!-- Left panel with reveal effect-->
+<div class="panel panel-left panel-reveal">
 
 
+    <div class="list-block layout-dark" ng-controller="detailsCtrl">
+        <ul>
+            <li class="item-content ">
+                <p ng-class="{ active: isSet(1) }">
+                    <a class="close-panel" ng-click="setTab(1)" href>Station</a>
+                </p>
+            </li>
+            <li class="item-content ">
+                <p ng-class="{ active: isSet(2) }">
+                    <a class="close-panel" ng-click="setTab(2)" href="#">Trips</a>
+                </p>
+            </li>
 
-        </div>
+            <li class="item-content ">
+                <p ng-class="{ active: isSet(3) }">
+                    <a class="close-panel" ng-click="setTab(3)" href>About App</a>
+                </p>
+            </li>
+        </ul>
+
+
     </div>
+</div>
 
-    <!-- Views -->
-    <div class="views">
-        <!-- Your main view, should have "view-main" class -->
-        <div class="view view-main">
-            <!-- Top Navbar-->
-            <div class="navbar">
-                <div class="navbar-inner">
-                    <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
-                    <div class="center sliding">Bart App</div>
-                    <div class="right">
-                        <!--
-                          Right link contains only icon - additional "icon-only" class
-                          Additional "open-panel" class tells app to open panel when we click on this link
-                        -->
-                        <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
-                    </div>
+<!-- Views -->
+<div class="views">
+    <!-- Your main view, should have "view-main" class -->
+    <div class="view view-main">
+        <!-- Top Navbar-->
+        <div class="navbar">
+            <div class="navbar-inner">
+                <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
+                <div class="center sliding">Bart App</div>
+                <div class="right">
+                    <!--
+                      Right link contains only icon - additional "icon-only" class
+                      Additional "open-panel" class tells app to open panel when we click on this link
+                    -->
+                    <a href="#" class="link icon-only open-panel"><i class="icon icon-bars"></i></a>
                 </div>
             </div>
-            <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
-            <div class="pages navbar-through toolbar-through">
-                <!-- Page, "data-page" contains page name -->
-                <div data-page="index" class="page">
-                    <!-- Scrollable page content -->
-                    <div class="page-content">
-                        <div class="content-block">
-                            <!-- Link to another page -->
-                            <div>
-                                <div ng-show ="isSet(1)" >
-                                   Select Station: <select ng-model="selected" class="button  color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected=''" ng-change="getStation(selected.abbr);change(selected.gtfs_latitude,selected.gtfs_longitude);createMarker()">
+        </div>
+        <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+        <div class="pages navbar-through toolbar-through">
+            <!-- Page, "data-page" contains page name -->
+            <div data-page="index" class="page">
+                <!-- Scrollable page content -->
+                <div class="page-content">
+                    <div class="content-block">
+                        <!-- Link to another page -->
+                        <div>
+                            <div ng-show="isSet(1)">
+                                <!--Select Station: <select ng-model="selected" class="button  color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected=''" ng-change="getStation(selected.abbr)">-->
 
-                                    </select>
+                                <!--</select>-->
 
+                                Select Station: <select class="color-black button" ng-model="selected"
+                                                        ng-change="getStation(selected)">
+                                <option ng-selected="{{x.abbr == $storage.ostation}}" value="{{x.abbr}}"
+                                        ng-repeat="x in resultGet.stations.station">{{x.name}}
+                                </option>
+                            </select>
+
+                                <div ng-hide = "!$storage.ostation" class="list-block">
+                                    <ul style="list-style-type: none;">
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>Name</b></div>
+                                                <div class="item-after">{{resultS.stations.station.name}}</div>
+                                            </div>
+                                        </li>
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>Address</b></div>
+                                                <div class="item-after">{{resultS.stations.station.address}}</div>
+                                            </div>
+                                        </li>
+
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>City</b>:</div>
+                                                <div class="item-after">{{resultS.stations.station.city}}</div>
+                                            </div>
+                                        </li>
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>State</b></div>
+                                                <div class="item-after">{{resultS.stations.station.state}}</div>
+                                            </div>
+                                        </li>
+
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>Zipcode</b></div>
+                                                <div class="item-after">{{resultS.stations.station.zipcode}}</div>
+                                            </div>
+                                        </li>
+
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>Cross Street</b></div>
+                                                <div class="item-after">{{resultS.stations.station.cross_street}}</div>
+                                            </div>
+                                        </li>
+
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>Latitude</b></div>
+                                                <div class="item-after">{{resultS.stations.station.gtfs_latitude}}</div>
+                                            </div>
+                                        </li>
+
+                                        <li class="item-content">
+                                            <div class="item-inner">
+                                                <div class="item-title"><b>Longitude</b></div>
+                                                <div class="item-after">{{resultS.stations.station.gtfs_longitude}}
+                                                </div>
+                                            </div>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+                        <!--Trips  page visibility-->
+
+                        <div>
+                            <div ng-show="isSet(2)" ng-controller="detailsCtrl">
+                                <div>
                                     <div class="list-block">
-                                        <ul ng-hide="!selected" style="list-style-type: none;">
+                                        <ul>
                                             <li class="item-content">
                                                 <div class="item-inner">
-                                                    <div class="item-title"><b>Name</b> </div>
-                                                    <div class="item-after">{{resultS.stations.station.name}}</div>
+                                                    <div class="item-title">Time for next train</div>
+                                                    <div class="item-after"><span class="badge">{{countTime | formatTimer}}</span>
+                                                    </div>
                                                 </div>
                                             </li>
-                                            <li class="item-content">
-                                                <div class="item-inner">
-                                                    <div class="item-title"><b>Address</b> </div>
-                                                    <div class="item-after">{{resultS.stations.station.address}}</div>
-                                                </div>
-                                            </li>
-
-                                            <li class="item-content">
-                                                <div class="item-inner">
-                                                    <div class="item-title"><b>City</b>: </div>
-                                                    <div class="item-after">{{resultS.stations.station.city}}</div>
-                                                </div>
-                                            </li>
-                                            <li class="item-content">
-                                                <div class="item-inner">
-                                                    <div class="item-title"><b>State</b></div>
-                                                    <div class="item-after">{{resultS.stations.station.state}}</div>
-                                                </div>
-                                            </li>
-
-                                            <li class="item-content">
-                                                <div class="item-inner">
-                                                    <div class="item-title"><b>Zipcode</b></div>
-                                                    <div class="item-after">{{resultS.stations.station.zipcode}}</div>
-                                                </div>
-                                            </li>
-
-                                            <li class="item-content">
-                                                <div class="item-inner">
-                                                    <div class="item-title"><b>Cross Street</b></div>
-                                                    <div class="item-after">{{resultS.stations.station.cross_street}}</div>
-                                                </div>
-                                            </li>
-
-                                            <li class="item-content">
-                                                <div class="item-inner">
-                                                    <div class="item-title"><b>Latitude</b></div>
-                                                    <div class="item-after">{{resultS.stations.station.gtfs_latitude}}</div>
-                                                </div>
-                                            </li>
-
-                                            <li class="item-content">
-                                                <div class="item-inner">
-                                                    <div class="item-title"><b>Longitude</b></div>
-                                                    <div class="item-after">{{resultS.stations.station.gtfs_longitude}}</div>
-                                                </div>
-                                            </li>
-
                                         </ul>
                                     </div>
 
 
-                                </div>
+                                    <!--Select Source: <select ng-model="selected1" class="button color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected1=''" ng-change="getDetails(selected1, selected2)"></select> <br/>-->
+                                    <!--Select Destination: <select ng-model="selected2" class="button  color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected2=''" ng-change="getDetails(selected1, selected2) " ></select>-->
+                                    Select Source:<select class="color-black button" ng-model="selected1"
+                                                          ng-change="getDetails(selected1, selected2)">
+                                    <option ng-selected="{{x.abbr == $storage.origin}}" value="{{x.abbr}}"
+                                            ng-repeat="x in resultGet.stations.station">{{x.name}}
+                                    </option>
+                                </select> <br/>
 
+                                    Select Destination: <select class="color-black button" ng-model="selected2"
+                                                                ng-change="getDetails(selected1, selected2)">
 
-                            </div>
-                            <!--Trips  page visibility-->
+                                    <option ng-selected="{{x.abbr == $storage.destination}}" value="{{x.abbr}}"
+                                            ng-repeat="x in resultGet.stations.station">{{x.name}}
+                                    </option>
+                                </select> <br/>
 
-                            <div>
-                                <div ng-show ="isSet(2)" ng-controller = "detailsCtrl">
-                                    <div>
-                                        <div class="list-block">
-                                            <ul>
-                                                <li class="item-content">
-                                                    <div class="item-inner">
-                                                        <div class="item-title">Time for next train </div>
-                                                        <div class="item-after"><span class="badge">{{countTime | formatTimer}}</span></div>
+                                    <!--<a href="#" ng-click = "getDetails($storage.origin, $storage.destination)" class="button active">Get Schedule</a>-->
+
+                                    <div ng-if="resultTrip.schedule.request.trip">
+                                        <!--card view-->
+                                        <div ng-repeat="st in resultTrip.schedule.request.trip">
+                                            <div class="card">
+                                                <div class="card-header"> Date: {{resultTrip.schedule.date | date:
+                                                    "fullDate"}}
+                                                </div>
+                                                <div class="card-content">
+                                                    <div class="card-content-inner">
+                                                        {{st["@attributes"].origin}} <br/> Departure Time ::
+                                                        {{st["@attributes"].origTimeMin}} <br/> <br/>
+                                                        {{st["@attributes"].destination}} <br/> Arrival Time ::
+                                                        {{st["@attributes"].destTimeMin}}
+
                                                     </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        Select Source: <select ng-model="selected1" class="button color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected1=''" ng-change="getDetails(selected1, selected2)"></select> <br/>
-                                        Select Destination: <select ng-model="selected2" class="button  color-black" ng-options="x as x.name for x in resultGet.stations.station" ng-init="selected2=''" ng-change="getDetails(selected1, selected2) " ></select>
-                                        <div ng-if="resultTrip.schedule.request.trip">
-                                            <!--card view-->
-                                            <div ng-repeat="st in resultTrip.schedule.request.trip">
-                                                <div class="card">
-                                                    <div class="card-header"> Date: {{resultTrip.schedule.date | date: "fullDate"}}</div>
-                                                        <div class="card-content">
-                                                            <div class="card-content-inner">
-                                                                {{st["@attributes"].origin}} <br/> Departure Time :: {{st["@attributes"].origTimeMin}} <br/> <br/>
-                                                                {{st["@attributes"].destination}} <br/> Arrival Time ::{{st["@attributes"].destTimeMin}}
-
-                                                            </div>
-                                                        </div>
-                                                    <div class="card-footer">Fare: {{st.fares.fare[0]["@attributes"].amount}}</div>
+                                                </div>
+                                                <div class="card-footer">Fare:
+                                                    {{st.fares.fare[0]["@attributes"].amount}}
                                                 </div>
                                             </div>
-
                                         </div>
+
                                     </div>
-
                                 </div>
 
                             </div>
-                            <div>
-                                <div ng-show ="isSet(3)" >
-                                    <p>This application provides the schedule of BART and the information of each station like its address, pin, street where it is located etc </p>
-                                </div>
+
+                        </div>
+                        <div>
+                            <div ng-show="isSet(3)">
+                                <p>This application provides the schedule of BART and the information of each station
+                                    like its address, pin, street where it is located etc </p>
                             </div>
+                        </div>
 
-                                <div class="popup popup-about">
-                                <div class="content-block">
-                                    <div id="mapElement"> </div>
-                                    <p><a href="#" class="close-popup">Close popup</a></p>
+                        <div class="popup popup-about">
+                            <div class="content-block">
+                                <div id="mapElement"></div>
+                                <p><a href="#" class="close-popup">Close popup</a></p>
 
-                                </div>
                             </div>
+                        </div>
 
 
-
-
-
+                    </div>
                 </div>
-            </div>
-            <!-- Bottom Toolbar-->
-            <div class="toolbar">
-                   <div style ="text-align:center;margin-top: 8px"> &copy; Mahendra Mhatre </div>
-            </div>
+                <!-- Bottom Toolbar-->
+                <div class="toolbar">
+                    <div style="text-align:center;margin-top: 8px"> &copy; Mahendra Mhatre</div>
+                </div>
 
 
+            </div>
         </div>
-    </div>
-
 
 
 </body>

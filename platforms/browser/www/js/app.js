@@ -3,14 +3,15 @@
  */
 
 
-var app = angular.module('BartModule', []);
+var app = angular.module('BartModule', ['ngStorage']);
 
- app.controller('MainCtrl', function($scope, $http) {
+ app.controller('MainCtrl', function($scope, $http, $localStorage) {
 
         this.source ="";
         this.destination = "";
         this.stationInfo = "";
         $scope.hello = "Hello";
+        $scope.$storage = $localStorage;
         this.setSource = function(newValue){
             this.source = newValue;
         };
@@ -36,17 +37,21 @@ var app = angular.module('BartModule', []);
         };
 
 
-        $scope.getStation = function(station) {
 
+        $scope.getStation = function(station) {
             $http.get("http://bart.mahendramhatre.com/station?source="+station).success(function(result) {
-                console.log("Success", result);
+
                 $scope.resultS = result;
+                $scope.$storage.ostation = station;
 
             }).error(function() {
                 console.log("error");
             });
         };
 
+     if(!($scope.$storage.ostation == undefined)) {
+         $scope.getStation($scope.$storage.ostation);
+     };
 
      $scope.tab = 1;
 
@@ -94,12 +99,12 @@ var app = angular.module('BartModule', []);
          $scope.long1 = sLong;
      };
 
-     $scope.createMarker();
+
 
 
  });
 
-app.controller('detailsCtrl', function($scope, $http, $interval, $timeout) {
+app.controller('detailsCtrl', function($scope, $http, $interval, $timeout, $localStorage) {
 
     this.isTrue = function() {
         return false;
@@ -109,6 +114,9 @@ app.controller('detailsCtrl', function($scope, $http, $interval, $timeout) {
     $scope.timeFound = false;
     $scope.noTrainFound = false;
     $scope.countTime = 0;
+
+    $scope.$storage = $localStorage;
+
     var mytimeout;
     $scope.getTimer = function (ans) {
         var currentTime = new Date().getTime();
@@ -159,14 +167,17 @@ app.controller('detailsCtrl', function($scope, $http, $interval, $timeout) {
         mytimeout = $timeout($scope.onTimeout, 1000);
     };
 
+
     $scope.getDetails = function(org , dest) {
 
         if(!(org === undefined) && !(dest === undefined)) {
 
-            $http.get("http://bart.mahendramhatre.com/trains?source=" + org.abbr + "&dest=" + dest.abbr).success(function (result) {
+            $http.get("http://bart.mahendramhatre.com/trains?source=" + org + "&dest=" + dest).success(function (result) {
                 console.log("Success", result);
                 $scope.resultTrip = result;
-
+                $scope.$storage.origin = org;
+                $scope.$storage.destination = dest;
+                
                 if(!($scope.resultTrip.schedule === undefined) ){
                     $scope.getTimer($scope.resultTrip);
                 }
@@ -184,6 +195,9 @@ app.controller('detailsCtrl', function($scope, $http, $interval, $timeout) {
 
     };
 
+    if(!($scope.$storage.origin == undefined) && !($scope.$storage.destination == undefined)) {
+        $scope.getDetails($scope.$storage.origin, $scope.$storage.destination);
+    }
 
 
 });
